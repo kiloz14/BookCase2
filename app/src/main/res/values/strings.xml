@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">BookCase2</string>
+
+
+    <string-array name="bookList">
+        <item>Android</item>
+        <item>Seal Team 6</item>
+        <item>Rainbow6</item>
+        <item>How </item>
+        <item>Kill Bill</item>
+        <item>Swag</item>
+        <item>Never Stop</item>
+        <item>Band </item>
+        <item>Animorphs</item>
+        <item>Drug Deal</item>
+        <item>Yeah Bouy</item>
+    </string-array>
+</resources>
