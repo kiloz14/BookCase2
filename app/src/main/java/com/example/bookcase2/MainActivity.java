@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
         bookDetailsFragment = new BookDetailsFragment();
         bookListFragment = new BookListFragment();
+
         viewPagerFragment = new ViewPagerFragment();
 
         if(!singlePane){
