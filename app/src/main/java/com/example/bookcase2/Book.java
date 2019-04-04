@@ -20,6 +20,52 @@ public class Book implements Parcelable {
     }
 
     protected Book(Parcel in) {
+        id = in.readInt();
+        author = in.readString();
+        title = in.readString();
+        book_cover_URL = in.readString();
+        published = in.readString();
+
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public void setBook_cover_URL(String book_cover_URL) {
+        this.book_cover_URL = book_cover_URL;
+    }
+
+    public void setPublished(String published) {
+        this.published = published;
+    }
+
+    public void setTitle(String title){
+        this.title = title;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public String getBook_cover_URL() {
+        return book_cover_URL;
+    }
+
+    public String getPublished() {
+        return published;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public static final Creator<Book> CREATOR = new Creator<Book>() {
@@ -41,5 +87,11 @@ public class Book implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+
+        dest.writeString(author);
+        dest.writeString(title);
+        dest.writeString(book_cover_URL);
+        dest.writeString(published);
+        dest.writeInt(id);
     }
 }
