@@ -3,6 +3,7 @@ package com.example.bookcase2;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -39,49 +40,57 @@ public class ViewPagerFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_view_pager,container,false);
-        final  String [] bookList = this.getResources().getStringArray(R.array.bookList);
 
         viewPager = view.findViewById(R.id.viewPager);
 
-        newFragment = new BookDetailsFragment();
         pagerAdapter = new PagerAdapter(getChildFragmentManager());
 
-        for (int i = 0 ; i < bookList.length; i++){
-            newFragment = BookDetailsFragment.newInstance(bookList[i]);
-            pagerAdapter.add(newFragment);
-        }
-
-        viewPager.setAdapter(pagerAdapter);
         return view;
     }
 
+    public void addPager(JSONArray bookArray) {
+        for(int i = 0 ; i < bookArray.length(); i++){
+            try{
+                JSONObject pagerData = bookArray.getJSONObject(i);
+                bookObj = new Book(pagerData);
+                newFragment = BookDetailsFragment.newInstance(bookObj);
+                pagerAdapter.add(newFragment);
+                pagerAdapter.notifyDataSetChanged();
 
-    class  PagerAdapter extends FragmentStatePagerAdapter{
-        ArrayList<BookDetailsFragment> pagerFragments;
-
-
-        public void add(BookDetailsFragment fragment)
-        {
-            pagerFragments.add(fragment);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
-
-        public PagerAdapter(FragmentManager fm) {
-            super(fm);
-            pagerFragments = new ArrayList<>();
-        }
-
-        @Override
-        public Fragment getItem(int i)
-        {
-            return pagerFragments.get(i);
-        }
-
-        @Override
-        public int getCount()
-        {
-            return pagerFragments.size();
-        }
+        viewPager.setAdapter(pagerAdapter);
     }
 
 
+   class PagerAdapter extends FragmentStatePagerAdapter{
+
+        ArrayList<BookDetailsFragment> pagerFragments;
+        public PagerAdapter(FragmentManager fm){
+            super(fm);
+            pagerFragments = new ArrayList<>();
+
+        }
+
+
+        public void add(BookDetailsFragment fr){
+            pagerFragments.add(fr);
+        }
+
+       @Override
+       public int getItemPosition(@NonNull Object object) {
+           return PagerAdapter.POSITION_NONE;
+       }
+       @Override
+       public Fragment getItem(int i) {
+           return pagerFragments.get(i);
+       }
+
+       @Override
+       public int getCount() {
+           return pagerFragments.size();
+       }
+   }
 }
