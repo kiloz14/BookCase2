@@ -1,28 +1,28 @@
 package com.example.bookcase2;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link BookDetailsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link BookDetailsFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+
 public class BookDetailsFragment extends Fragment {
 
 
     String bookSelected;
     TextView textView;
+    ImageView imageView;
+
+    String author, title, publisher;
+    Book pagerBooks;
     public static final String BOOK_KEY = "book";
 
 
@@ -30,10 +30,10 @@ public class BookDetailsFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static BookDetailsFragment newInstance(String book) {
+    public static BookDetailsFragment newInstance(Book bookList) {
         BookDetailsFragment fragment = new BookDetailsFragment();
         Bundle args = new Bundle();
-        args.putString(BOOK_KEY, book);
+        args.putParcelable(BOOK_KEY,bookList);
         fragment.setArguments(args);
         return fragment;
     }
@@ -43,7 +43,7 @@ public class BookDetailsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            bookSelected = getArguments().getString(BOOK_KEY);
+            pagerBooks = getArguments().getParcelable(BOOK_KEY);
         }
     }
 
@@ -54,12 +54,24 @@ public class BookDetailsFragment extends Fragment {
         // Inflate the layout for this fragment
         View view =inflater.inflate(R.layout.fragment_book_details, container, false);
         textView = view.findViewById(R.id.bookTitle);
-        displayedBookSelected(bookSelected);
-        return  view;
+       imageView = view.findViewById(R.id.viewPager);
+       if(getArguments()!= null) {
+           displayedBookSelected(pagerBooks);
+       }
+       return  view;
     }
 
-    public void displayedBookSelected(String bookSelected) {
-    textView.setText(bookSelected);
+    public void displayedBookSelected(Book bookObj) {
+    author = bookObj.getAuthor();
+    title = bookObj.getTitle();
+    publisher = bookObj.getPublished();
+    textView.setText(title);
+    textView.append("," + author);
+    textView.append("\n"+publisher);
+    textView.setTextColor(Color.BLACK);
+    textView.setTextSize(18);
+    String imageUrl = bookObj.getBook_cover_URL();
+    Picasso.get().load(imageUrl).into(imageView);
     }
 
 
