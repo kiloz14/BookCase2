@@ -10,6 +10,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     BookDetailsFragment bookDetailsFragment;
     BookListFragment bookListFragment;
     ViewPagerFragment  viewPagerFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,9 +43,9 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
 
     @Override
-    public void bookSelected(String bookTitle) {
+    public void bookSelected(Book bookObj) {
 
-        bookDetailsFragment.displayedBookSelected(bookTitle);
+        bookDetailsFragment.displayedBookSelected(bookObj);
 
     }
 }
