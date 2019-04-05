@@ -4,12 +4,19 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 
 /**
@@ -32,6 +39,9 @@ public class BookListFragment extends Fragment {
 
     ListView listView;
     Context c;
+    ArrayList<Book> bookList;
+    BookAdapter adapter;
+    Book books;
 
     private BookInterface mListener;
 
@@ -43,8 +53,6 @@ public class BookListFragment extends Fragment {
     public static BookListFragment newInstance(String param1, String param2) {
         BookListFragment fragment = new BookListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,10 +60,6 @@ public class BookListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -64,17 +68,44 @@ public class BookListFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_book_list, container, false);
         listView = v.findViewById(R.id.bookList);
-        final String bookList[] = this.getResources().getStringArray(R.array.bookList);
-        listView.setAdapter(new ArrayAdapter<>(c, android.R.layout.simple_list_item_1, bookList));
+        bookList = new ArrayList<>();
+        return v;
+    }
+
+    public void getBooks (final JSONArray bookArray){
+
+        for(int i = 0 ; i < bookArray.length(); i++){
+            try{
+                JSONObject jsonObject = bookArray.getJSONObject(i);
+                bookList.add(new Book(bookArray.getJSONObject(i)));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        Log.d("Book List", bookList.toString());
+        updateList();
+    }
+
+    private void updateList() {
+        // Updates my list every time there is a change with the list
+        final  ArrayList<Book> newList = new ArrayList<>();
+
+        newList.addAll(bookList);
+        Log.d("Books", newList.toString());
+        adapter = new BookAdapter(c , newList);
+
+        listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String bookTitle = (String) parent.getItemAtPosition(position);
-                ((BookInterface) c).bookSelected(bookTitle);
+                books = newList.get(position);
+                ((BookInterface) c ).bookSelected(books);
             }
         });
-        return v;
+
+        bookList.clear();
+        adapter.notifyDataSetChanged();
     }
 
 
@@ -99,6 +130,6 @@ public class BookListFragment extends Fragment {
 
     public interface BookInterface {
         // TODO: Update argument type and name
-        void bookSelected(String bookTitle);
+        void bookSelected(Book bookObj);
     }
 }
